@@ -1,0 +1,2 @@
+* text=auto
+tasks/** text eol=lf whitespace=tab-in-indent
