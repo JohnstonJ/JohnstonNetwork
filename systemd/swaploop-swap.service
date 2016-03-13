@@ -1,0 +1,20 @@
+[Unit]
+# This is a prime candidate for making a service template if
+# swaploop-device.service can also be made a service template.
+
+Description=Swap for /root/swap/swaploop
+Requires=swaploop-device.service
+After=swaploop-device.service
+# umount.target is normally a default dependency of a .swap unit:
+Before=swap.target umount.target
+Conflicts=umount.target
+DefaultDependencies=no
+
+[Install]
+RequiredBy=swap.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c '/sbin/swapon -o discard "$(/sbin/losetup -j /root/swap/swaploop | cut -f 1 -d :)"'
+ExecStop=/bin/sh -c '/sbin/swapoff "$(/sbin/losetup -j /root/swap/swaploop | cut -f 1 -d :)"'

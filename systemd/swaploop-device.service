@@ -1,0 +1,31 @@
+# This service works around the fact that the "loop" option is ignored on
+# swap fstab entries - that is, specifying "loop" on a swap file in fstab
+# will not cause a loop device to be created for the swap.  Some file
+# systems like btrfs do not support swap files, and so the only way to use
+# a swap file on them is to use a loop device.
+#
+# This file and associated swaploop-swap.service can be used to manually
+# set up the loop device.  You can supply absolute paths to systemd with
+# "systemctl enable" and systemd will put symlinks to these services.  Note
+# that you should not attempt to directly create symlinks in /etc to these
+# services.
+#
+# Note that on btrfs you will NOT want the swap file to be created with
+# nodatacow, because that would disable checksumming.
+
+[Unit]
+# This is a prime candidate for making a service template, but
+# RequiresMountsFor does not support %f specifier:
+#
+#     https://github.com/systemd/systemd/issues/2829/
+#     Support specifiers like %f in RequiresMountsFor in [Unit] section
+
+Description=Loop device for /root/swap/swaploop
+RequiresMountsFor=/root/swap/swaploop
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/losetup -f /root/swap/swaploop
+ExecStop=/bin/sh -c '/sbin/losetup -d "$(/sbin/losetup -j /root/swap/swaploop | cut -f 1 -d :)"'
