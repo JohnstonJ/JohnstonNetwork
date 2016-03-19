@@ -7,4 +7,4 @@ set -e
 # Only one simultanious instance allowed.
 [ "$FLOCKER" != "$0" ] && exec env FLOCKER="$0" flock -en "$0" "$0" "$@" || :
 
-rsync -qaAX /boot/efi /boot/efi-mirror
+rsync -qaAX --delete /boot/efi/ /boot/efi-mirror
