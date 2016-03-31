@@ -1,0 +1,8 @@
+[Unit]
+Description=EFI partition mirroring service
+ConditionPathIsMountPoint=/boot/efi
+ConditionPathIsMountPoint=/boot/efi-mirror
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/rsync -qaAX --delete /boot/efi/ /boot/efi-mirror

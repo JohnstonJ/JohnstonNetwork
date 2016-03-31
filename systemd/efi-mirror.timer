@@ -1,0 +1,8 @@
+[Unit]
+Description=EFI partition mirroring timer
+
+[Timer]
+OnCalendar=hourly
+
+[Install]
+WantedBy=timers.target
