@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+mountpoint="$1"
+if [ -z "$mountpoint" ] ; then
+    echo "Specify the btrfs mount point as a parameter."
+    exit 1
+fi
+
+# Begin maintenance by balancing
+
+echo "Beginning balance for $mountpoint"
+
+# This sequence of balance usages borrowed from:
+# https://github.com/kdave/btrfsmaintenance/blob/decbc871821f1b95b38c9ca35895048c5dfbb7e6/sysconfig.btrfsmaintenance
+# Apparently a gradual approach is required to avoid ENOSPC
+# The above link uses different values for DUSAGE and MUSAGE, but we use the
+# same because they must be the same if there are mixed groups.
+BTRFS_BALANCE_USAGE="0 1 5 10 20 30 40"
+for USAGE in $BTRFS_BALANCE_USAGE ; do
+    btrfs balance start -v -dusage=$USAGE -musage=$USAGE "$mountpoint"
+done
+
+# Now do the scrub.
+echo "Beginning scrub for $mountpoint"
+btrfs scrub start -BdR "$mountpoint"

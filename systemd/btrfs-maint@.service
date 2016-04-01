@@ -1,0 +1,6 @@
+[Unit]
+Description=btrfs scrub service for %f
+
+[Service]
+Type=simple
+ExecStart=/var/JohnstonNetwork/tasks/btrfs-maint %f

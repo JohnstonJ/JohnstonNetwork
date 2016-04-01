@@ -1,0 +1,9 @@
+[Unit]
+Description=btrfs scrub timer for %f
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+
+[Install]
+WantedBy=timers.target
