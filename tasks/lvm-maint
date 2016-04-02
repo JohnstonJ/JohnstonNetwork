@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# Maintenance for LVM RAID array
+
+set -e
+
+LV="$1"
+if [ -z "$LV" ] ; then
+    echo "Specify the LVM logical volume as a parameter."
+    exit 1
+fi
+
+echo "RAID status of $LV before repair:"
+lvs -o +raid_sync_action,raid_mismatch_count "$LV"
+
+# NOTE: If a repair is already in progress, this command ought to fail.  But
+# currently it doesn't because of a bug in lv_raid_message in
+# lib/activate/activate.c
+lvchange --syncaction repair "$LV"
+
+# Wait for the repair to complete:
+while lvs -o raid_sync_action --noheadings "$LV" | grep -q repair
+do
+    sleep 5
+done
+
+echo "RAID status of $LV after repair:"
+lvs -o +raid_sync_action,raid_mismatch_count "$LV"

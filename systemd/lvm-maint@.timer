@@ -1,0 +1,9 @@
+[Unit]
+Description=lvm RAID maintenance timer for %I
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+
+[Install]
+WantedBy=timers.target

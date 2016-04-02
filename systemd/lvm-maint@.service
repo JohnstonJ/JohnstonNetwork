@@ -1,0 +1,6 @@
+[Unit]
+Description=lvm RAID maintenance service for %I
+
+[Service]
+Type=simple
+ExecStart=/var/JohnstonNetwork/tasks/lvm-maint %I
