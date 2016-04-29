@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Script for enable systemd units for use.  You can then enable the individual
+# units as desired.
+
+set -e
+
+CDPATH=
+cd -- "$(dirname -- "$0")"
+
+# Add to systemd search order.  This is required due to systemd issue #661
+#
+#     https://github.com/systemd/systemd/issues/661
+#     systemctl enable with an absolute path as argument cannot be used to
+#     create template instances
+#
+# This makes it more convenient anyway, as opposed to enabling units one by
+# one...
+cat > /etc/initramfs-tools/conf.d/JohnstonNetwork.conf <<EOF
+# Add our systemd units to the systemd search order
+export SYSTEMD_UNIT_PATH=$(pwd)/systemd:
+EOF
+
+update-initramfs -u -k all
