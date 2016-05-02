@@ -1,0 +1,6 @@
+[Unit]
+Description=Run Lynis security audit
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/lynis audit system --cronjob

@@ -1,0 +1,8 @@
+[Unit]
+Description=Periodically run Lynis security auditing
+
+[Timer]
+OnCalendar=daily
+
+[Install]
+WantedBy=timers.target
