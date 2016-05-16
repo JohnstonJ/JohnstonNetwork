@@ -1,0 +1,8 @@
+[Unit]
+Description=Update DNS registration via SAMBA
+
+[Timer]
+OnCalendar=daily
+
+[Install]
+WantedBy=timers.target

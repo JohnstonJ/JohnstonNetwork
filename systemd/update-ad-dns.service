@@ -1,0 +1,6 @@
+[Unit]
+Description=Update DNS registration via SAMBA
+
+[Service]
+Type=simple
+ExecStart=/var/JohnstonNetwork/tasks/update-ad-dns

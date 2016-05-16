@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Update DNS registration because SAMBA is currently incapable of it:
+#
+#     https://bugzilla.samba.org/show_bug.cgi?id=8894
+#     Bug 8894 - RFE: Implement DNS registration update/refresh
+#
+# NOTE:  This currently does not clean old IPv6 addresses.  See:
+#
+#     https://lists.samba.org/archive/samba-technical/2016-May/114067.html
+#     Possible / probable bug: "net ads dns register" does not remove stale
+#     IPv6 AAAA records
+
+if ! net ads dns register --machine-pass ; then
+    # Ugly hack: things might still be initializing...
+    (
+        for i in $(seq 1 30 ) ; do
+            sleep 10
+            if net ads dns register --machine-pass ; then
+                break
+            fi
+        done
+    ) &
+fi
