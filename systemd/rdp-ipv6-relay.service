@@ -1,0 +1,13 @@
+# Currently, xrdp server distributed with Ubuntu 16.04 only supports listening
+# on IPv4.  This creates trouble for IPv6 clients who may try to connect on
+# IPv6.  This service sets up a relay from IPv4 to IPv6 for xrdp.
+
+[Unit]
+Description=Relay RDP protocol on IPv6
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/socat TCP6-LISTEN:3389,ipv6only,fork,reuseaddr TCP4:localhost:3389
+
+[Install]
+WantedBy=multi-user.target
