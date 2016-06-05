@@ -2,7 +2,7 @@
 Description=Update DNS registration via SAMBA
 
 [Timer]
-OnCalendar=daily
+OnCalendar=*:0/5
 
 [Install]
 WantedBy=timers.target

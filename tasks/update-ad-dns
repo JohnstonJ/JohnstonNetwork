@@ -11,14 +11,10 @@
 #     Possible / probable bug: "net ads dns register" does not remove stale
 #     IPv6 AAAA records
 
-if ! net ads dns register --machine-pass ; then
-    # Ugly hack: things might still be initializing...
-    (
-        for i in $(seq 1 30 ) ; do
-            sleep 10
-            if net ads dns register --machine-pass ; then
-                break
-            fi
-        done
-    ) &
-fi
+# Ugly hack: things might still be initializing...
+for i in $(seq 1 30 ) ; do
+    if net ads dns register --machine-pass ; then
+        break
+    fi
+    sleep 10
+done
