@@ -1,0 +1,17 @@
+[Unit]
+Description=Prioritized shutdown for %I
+Requires=lxd-containers.service
+After=lxd-containers.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# Don't call lxc start because that would disrespect
+# boot.autostart.delay/priority settings.
+ExecStart=/bin/true
+# lxc returns status 1 if container already started
+SuccessExitStatus=1
+ExecStop=/usr/bin/lxc stop %I
