@@ -10,7 +10,9 @@ for share in $SHARE_LIST ; do
     if [ "$1" = "--mount" ] ; then
         mount -t cifs -o ro,cache=none,credentials=/etc/CrashPlanCIFSCredentials,_netdev //$SERVER_NAME/$share /shares/$share
     elif [ "$1" = "--unmount" ] ; then
-        umount /shares/$share
+        if ! umount /shares/$share ; then
+            echo "Warning: unmounting $share failed!"
+        fi
     elif [ "$1" = "--prepare" ] ; then
         mkdir -p /shares/$share
         chmod 000 /shares/$share
