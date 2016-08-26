@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# See CrashPlan-CIFS-shares.service for more information about this file.
+
+set -e
+
+. /etc/CrashPlanCIFSConfig
+
+for share in $SHARE_LIST ; do
+    if [ "$1" = "--mount" ] ; then
+        mount -t cifs -o ro,cache=none,credentials=/etc/CrashPlanCIFSCredentials,_netdev //$SERVER_NAME/$share /shares/$share
+    elif [ "$1" = "--unmount" ] ; then
+        umount /shares/$share
+    elif [ "$1" = "--prepare" ] ; then
+        mkdir -p /shares/$share
+        chmod 000 /shares/$share
+    fi
+done

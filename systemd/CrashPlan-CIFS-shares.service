@@ -1,0 +1,31 @@
+# This service mounts CIFS shares for CrashPlan to back up.  It's expected
+# that you provide two files:
+#
+#  * /etc/CrashPlanCIFSCredentials: credentials file suitable for use with
+#    mount.cifs (see credentials= mount options for more information).  You
+#    must protect this file so that only root can read it.
+#  * /etc/CrashPlanCIFSConfig: configuration file containing:
+#        SHARE_LIST="<space-separated list of share names>"
+#        SERVER_NAME=<name of CIFS server>
+#
+# Before enabling this service, you must prepare the mount points manually.
+# Each share is mounted at "/shares/<share name>".  You must set file mode
+# to 000 (i.e. deny access to everything) for every mount point.  This way,
+# CrashPlan will never be able to read an empty unmounted directory (i.e. it
+# might think you deleted all your files!).
+
+[Unit]
+Description=CIFS share mounting for CrashPlan
+# multi-user.target is required in order for various SAMBA/network-related
+# services to be started.
+After=multi-user.target
+Before=crashplan.service
+
+[Install]
+RequiredBy=crashplan.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/var/JohnstonNetwork/tasks/CrashPlanCIFSMount --mount
+ExecStop=/var/JohnstonNetwork/tasks/CrashPlanCIFSMount --unmount
